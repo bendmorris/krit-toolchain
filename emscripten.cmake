@@ -1,0 +1,8 @@
+message(STATUS "Configuring Emscripten build")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c99-designator -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_FREETYPE=1 -s USE_HARFBUZZ=1 -s USE_ZLIB=1")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3")
+# link_directories(${CMAKE_CURRENT_SOURCE_DIR}/toolchain/emscripten/lib)
+include_directories(BEFORE ${KRIT_DIR}/toolchain/emscripten/include)
+set(TOOLCHAIN_LIB_PATH ${KRIT_DIR}/toolchain/emscripten/lib)
+set(CMAKE_FIND_LIBRARY_PREFIXES "lib" "")
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".so" ".a")
