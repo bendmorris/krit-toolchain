@@ -4,7 +4,7 @@ set(STATIC "-Wl,-Bstatic")
 set(CMAKE_FIND_LIBRARY_PREFIXES "lib" "")
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".dll" ".dll.a" ".lib" ".a")
 set(TOOLCHAIN_LIB_PATH ${KRIT_DIR}/toolchain/windows/lib)
-
 include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/krit/toolchain/windows/include)
 include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/krit/toolchain/windows/include/freetype2)
 link_directories(${CMAKE_SOURCE_DIR}/krit/toolchain/windows/bin)
+include("${CMAKE_SOURCE_DIR}/krit/toolchain/desktop.cmake")

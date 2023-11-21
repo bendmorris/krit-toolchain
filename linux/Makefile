@@ -1,11 +1,14 @@
 export PREFIX=$(shell pwd)
 export C_INCLUDE_PATH=$(shell pwd)/include
 export CPLUS_INCLUDE_PATH=$(shell pwd)/include
-export CFLAGS=-fno-finite-math-only
-export CPPFLAGS=-I$(shell pwd)/include
+export CFLAGS=-fno-finite-math-only -I${PREFIX}/include
+export CXXFLAGS=-I${PREFIX}/include
+export LDFLAGS=-L${PREFIX}/lib -L${PREFIX}/lib
 export PKG_CONFIG_PATH=$(shell pwd)/lib/pkgconfig
 
-.PHONY: SDL zlib png jpeg SDL_image ogg vorbis sndfile freetype harfbuzz yaml openssl zip curl openal
+.PHONY: SDL zlib png jpeg SDL_image ogg vorbis opus flac sndfile freetype harfbuzz yaml openssl zip curl sqlite
+
+all: SDL zlib png jpeg SDL_image ogg vorbis opus flac sndfile freetype harfbuzz yaml openssl zip curl sqlite
 
 # SDL
 SDL: lib/libSDL2.a
@@ -14,7 +17,7 @@ SDL2-2.0.10.tar.gz:
 SDL2-2.0.10: SDL2-2.0.10.tar.gz
 	tar xzf $<
 lib/libSDL2.a: SDL2-2.0.10
-	cd $< && ./configure --disable-shared --prefix=$$PREFIX && make -j8 && make install
+	cd $< && ./configure --disable-shared --prefix=$$PREFIX --enable-video-x11-xcursor && make -j8 && make install
 
 # ZLIB
 zlib: lib/libz.a
@@ -26,7 +29,7 @@ lib/libz.a: zlib-1.2.13
 	cd $< && ./configure --prefix=$$PREFIX --static && make -j8 && make install
 
 # PNG
-png: lib/libpng16.a
+png: zlib lib/libpng16.a
 libpng-1.6.39.tar.gz:
 	curl -L http://prdownloads.sourceforge.net/libpng/libpng-1.6.39.tar.gz?download -o $@
 libpng-1.6.39: libpng-1.6.39.tar.gz
@@ -131,7 +134,7 @@ openssl-3.0.7.tar.gz:
 openssl-3.0.7: openssl-3.0.7.tar.gz
 	tar xzf $<
 lib/libssl.a: openssl-3.0.7
-	cd $< && ./Configure --no-shared --static -static --prefix=$$PREFIX && make -j8 && make install
+	cd $< && ./Configure --no-shared --static -static --prefix=$$PREFIX --libdir=lib && make -j8 && make install
 
 # zip
 zip: lib/libzip.a
@@ -150,18 +153,6 @@ curl-7.87.0: curl-7.87.0.tar.xz
 	tar xf $<
 lib/libcurl.a: curl-7.87.0
 	cd $< && OPENSSL_LIBS= ./configure --enable-static --disable-shared --disable-ldap --disable-ldaps --with-openssl --prefix=$$PREFIX && make -j8 && make install
-
-# # openal
-# openal: lib/libopenal.dll.a
-# mingw-w64-x86_64-openal-1.22.2-1-any.pkg.tar.zst:
-# 	curl -L https://mirror.msys2.org/mingw/mingw64/mingw-w64-x86_64-openal-1.22.2-1-any.pkg.tar.zst -o $@
-# openal-1.22.2/mingw64: mingw-w64-x86_64-openal-1.22.2-1-any.pkg.tar.zst
-# 	mkdir -p openal-1.22.2 && tar --use-compress-program=unzstd -xvf $< -C openal-1.22.2
-# lib/libopenal.dll.a: openal-1.22.2/mingw64
-# 	mkdir -p $(PREFIX)/bin && cp -r openal-1.22.2/mingw64/bin/* $(PREFIX)/bin
-# 	mkdir -p $(PREFIX)/include && cp -r openal-1.22.2/mingw64/include/* $(PREFIX)/include
-# 	mkdir -p $(PREFIX)/lib && cp -r openal-1.22.2/mingw64/lib/* $(PREFIX)/lib
-# 	mkdir -p $(PREFIX)/share && cp -r openal-1.22.2/mingw64/share/* $(PREFIX)/share
 
 # sqlite
 sqlite: lib/libsqlite3.a
