@@ -23,9 +23,9 @@ dependency_libs=' -L/home/ben/Dev/march/krit/toolchain/windows/lib -lpthread -lw
 weak_library_names=''
 
 # Version information for libSDL2.
-current=2600
-age=2600
-revision=1
+current=2901
+age=2901
+revision=0
 
 # Is this an already installed library?
 installed=yes

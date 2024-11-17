@@ -1,7 +1,7 @@
 /* include/SDL_config.h.  Generated from SDL_config.h.in by configure.  */
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2022 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2024 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -54,7 +54,7 @@
 
 /* Comment this if you want to build without any C library requirements */
 #define HAVE_LIBC 1
-#if HAVE_LIBC
+#ifdef HAVE_LIBC
 
 /* Useful headers */
 #define STDC_HEADERS 1
@@ -205,6 +205,7 @@
 /* #undef HAVE_GETPAGESIZE */
 /* #undef HAVE_MPROTECT */
 /* #undef HAVE_ICONV */
+/* #undef SDL_USE_LIBICONV */
 /* #undef HAVE_PTHREAD_SETNAME_NP */
 /* #undef HAVE_PTHREAD_SET_NAME_NP */
 /* #undef HAVE_SEM_TIMEDWAIT */
@@ -242,8 +243,6 @@
 #define HAVE_DXGI_H 1
 /* #undef HAVE_WINDOWS_GAMING_INPUT_H */
 #define HAVE_XINPUT_H 1
-/* #undef HAVE_XINPUT_GAMEPAD_EX */
-/* #undef HAVE_XINPUT_STATE_EX */
 
 #define HAVE_MMDEVICEAPI_H 1
 #define HAVE_AUDIOCLIENT_H 1
@@ -491,5 +490,8 @@
 
 /* Enable dynamic libsamplerate support */
 /* #undef SDL_LIBSAMPLERATE_DYNAMIC */
+
+/* Libdecor get min/max content size functions */
+/* #undef SDL_HAVE_LIBDECOR_GET_MIN_MAX */
 
 #endif /* SDL_config_h_ */

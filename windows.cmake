@@ -3,6 +3,7 @@ set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc 
 set(KRIT_PLATFORM_STATIC_LIBS "-lmingw32 -mwindows -Wl,--dynamicbase -Wl,--nxcompat -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lsetupapi -lversion -luuid -lws2_32 -lcrypt32 -fno-stack-protector")
 set(CMAKE_FIND_LIBRARY_PREFIXES "lib" "")
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".dll.a" ".lib" ".a")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mconsole")
 set(KRIT_STATIC "-Wl,-Bstatic")
 set(TOOLCHAIN_LIB_PATH ${KRIT_DIR}/toolchain/windows/lib)
 include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/krit/toolchain/windows/include)

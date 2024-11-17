@@ -7,7 +7,7 @@ set(CMAKE_CXX_COMPILER i686-w64-mingw32-g++-posix)
 set(CMAKE_RC_COMPILER i686-w64-mingw32-windres)
 set(CMAKE_RC_FLAGS -DGCC_WINDRES)
 set(CMAKE_LINKER i686-w64-mingw32-ldd)
-set(CMAKE_CFLAGS "${CMAKE_CFLAGS} -static -static-libgcc -static-libstdc++")
+set(CMAKE_CFLAGS "${CMAKE_CFLAGS} -static -static-libgcc -static-libstdc++ -gcoff")
 set(CMAKE_CXXFLAGS "${CMAKE_CXXFLAGS} -static -static-libgcc -static-libstdc++")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
 

@@ -1,5 +1,5 @@
-.PHONY: all clean curl flac freetype harfbuzz jpeg ogg openal openssl opus png sdl sdl_image sndfile sqlite vorbis yaml zip zlib
-all: curl flac freetype harfbuzz jpeg ogg openal openssl opus png sdl sdl_image sndfile sqlite vorbis yaml zip zlib
+.PHONY: all clean curl curses flac freetype harfbuzz jpeg libedit ogg openal openssl opus png sdl sdl_image sndfile sqlite vorbis yaml zip zlib
+all: curl curses flac freetype harfbuzz jpeg libedit ogg openal openssl opus png sdl sdl_image sndfile sqlite vorbis yaml zip zlib
 clean:
 	for i in ls -d */; do rm -rf $i; done
 	rm -rf lib/*
@@ -14,6 +14,34 @@ build/curl-7.87.0: build/curl-7.87.0.tar.xz
 	tar xf $< -C build
 lib/libcurl.a: build/curl-7.87.0 lib/libssl.a
 	cd $< && ./configure --build=$$BUILD --host=$$HOST --enable-static --disable-shared --disable-ldap --disable-ldaps --without-librtmp --with-openssl --prefix=$$PREFIX && make -j8 && make install
+
+# curses
+curses: lib/libncurses.a
+build/ncurses-6.5.tar.gz:
+	curl -L https://ftp.gnu.org/gnu/ncurses/ncurses-6.5.tar.gz -o $@
+build/ncurses-6.5: build/ncurses-6.5.tar.gz
+	tar xzf $< -C build
+lib/libncurses.a: build/ncurses-6.5
+	cd $< && ./configure --build=$$BUILD --host=$$HOST --enable-static --disable-shared --prefix=$$PREFIX 	--without-cxx \
+    --without-ada \
+    --with-cxx \
+    --without-pthread \
+    --disable-rpath \
+    --enable-colorfgbg \
+    --enable-ext-colors \
+    --enable-ext-mouse \
+    --disable-symlinks \
+    --enable-warnings \
+    --enable-assertions \
+    --disable-home-terminfo \
+    --enable-database \
+    --enable-sp-funcs \
+    --enable-term-driver \
+    --enable-interop \
+    --enable-widec \
+    --enable-pc-files \
+	--disable-lib-suffixes \
+	--without-manpages && make -j8 && make install
 
 # flac
 flac: lib/libFLAC.a
@@ -51,6 +79,15 @@ build/libjpeg-turbo-2.0.4: build/libjpeg-turbo-2.0.4.tar.gz
 lib/libjpeg.a: build/libjpeg-turbo-2.0.4
 	mkdir -p build/libjpeg-turbo-2.0.4/build
 	cd build/libjpeg-turbo-2.0.4/build && cmake -G"Unix Makefiles" $$CMAKE_TOOLCHAIN -DCMAKE_INSTALL_PREFIX=$$PREFIX -D ENABLE_SHARED=FALSE .. && make jpeg-static -j8 && make install
+
+# libedit
+libedit: lib/libedit.a
+build/libedit-20240808-3.1.tar.gz:
+	curl -L https://www.thrysoee.dk/editline/libedit-20240808-3.1.tar.gz -o $@
+build/libedit-20240808-3.1: build/libedit-20240808-3.1.tar.gz
+	tar xzf $< -C build
+lib/libedit.a: build/libedit-20240808-3.1 lib/libncurses.a
+	cd $< && ./configure --build=$$BUILD --host=$$HOST --enable-static --disable-shared --prefix=$$PREFIX && make -j8 && make install
 
 # ogg
 ogg: lib/libogg.a
@@ -100,12 +137,12 @@ lib/libpng16.a: build/libpng-1.6.39 lib/libz.a
 
 # SDL
 sdl: lib/libSDL2.a
-build/SDL2-2.26.1.tar.gz:
+build/SDL2-2.29.1.tar.gz:
 	mkdir -p build
-	curl -L https://github.com/libsdl-org/SDL/releases/download/release-2.26.1/SDL2-2.26.1.tar.gz -o $@
-build/SDL2-2.26.1: build/SDL2-2.26.1.tar.gz
+	curl -L https://github.com/libsdl-org/SDL/releases/download/prerelease-2.29.1/SDL2-2.29.1.tar.gz -o $@
+build/SDL2-2.29.1: build/SDL2-2.29.1.tar.gz
 	tar xzf $< -C build
-lib/libSDL2.a: build/SDL2-2.26.1
+lib/libSDL2.a: build/SDL2-2.29.1
 	cd $< && ./configure --build=$$BUILD --host=$$HOST --enable-static --disable-shared --prefix=$$PREFIX && make -j8 && make install
 
 # SDL_image
