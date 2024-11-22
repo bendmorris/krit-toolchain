@@ -1,8 +1,7 @@
 .PHONY: all clean curl curses flac freetype harfbuzz jpeg libedit ogg openal openssl opus png sdl sdl_image sndfile sqlite vorbis yaml zip zlib
-all: curl curses flac freetype harfbuzz jpeg libedit ogg openal openssl opus png sdl sdl_image sndfile sqlite vorbis yaml zip zlib
+all: curl flac freetype harfbuzz jpeg ogg openal openssl opus png sdl sdl_image sndfile sqlite vorbis yaml zip zlib
 clean:
-	for i in ls -d */; do rm -rf $i; done
-	rm -rf lib/*
+	rm -rf lib/* `ls -d build/*/`
 
 .MKDIR: $(shell mkdir -p build)
 
@@ -100,12 +99,12 @@ lib/libogg.a: build/libogg-1.3.5
 
 # openal
 openal: $(OPENAL_LIB_NAME)
-build/openal-soft-1.23.1.tar.bz2:
-	curl -L https://github.com/kcat/openal-soft/releases/download/1.23.1/openal-soft-1.23.1.tar.bz2 -o $@
-build/openal-soft-1.23.1: build/openal-soft-1.23.1.tar.bz2
-	tar xjf $< -C build
-$(OPENAL_LIB_NAME): build/openal-soft-1.23.1 lib/libsndfile.a lib/libz.a
-	cd build/openal-soft-1.23.1/build && cmake -G"Unix Makefiles" $$CMAKE_TOOLCHAIN -DCMAKE_INSTALL_PREFIX=$$PREFIX -DLIBTYPE=STATIC -DALSOFT_UTILS=OFF -DALSOFT_EXAMPLES=OFF -DSNDFILE_LIBRARY=$(shell pwd)/lib/libsndfile.a -DSNDFILE_INCLUDE_DIR=$(shell pwd)/include -DZLIB_LIBRARY=$(shell pwd)/lib/libz.a -DZLIB_INCLUDE_DIR=$(shell pwd)/include .. && make -j8 && make install
+build/openal-soft-1.24.0.tar.gz:
+	curl -L https://github.com/kcat/openal-soft/archive/refs/tags/1.24.0.tar.gz -o $@
+build/openal-soft-1.24.0: build/openal-soft-1.24.0.tar.gz
+	tar xzf $< -C build
+$(OPENAL_LIB_NAME): build/openal-soft-1.24.0 lib/libsndfile.a lib/libz.a
+	cd build/openal-soft-1.24.0/build && cmake -G"Unix Makefiles" $$CMAKE_TOOLCHAIN -DCMAKE_INSTALL_PREFIX=$$PREFIX -DLIBTYPE=STATIC -DALSOFT_UTILS=OFF -DALSOFT_EXAMPLES=OFF -DSNDFILE_LIBRARY=$(shell pwd)/lib/libsndfile.a -DSNDFILE_INCLUDE_DIR=$(shell pwd)/include -DZLIB_LIBRARY=$(shell pwd)/lib/libz.a -DZLIB_INCLUDE_DIR=$(shell pwd)/include .. && env && make -j8 && make install
 
 # openssl
 openssl: lib/libssl.a
@@ -196,8 +195,8 @@ build/libzip-1.9.2.tar.gz:
 	curl -L https://github.com/nih-at/libzip/releases/download/v1.9.2/libzip-1.9.2.tar.gz -o $@
 build/libzip-1.9.2: build/libzip-1.9.2.tar.gz
 	tar xzf $< -C build
-lib/libzip.a: build/libzip-1.9.2
-	cd $< && mkdir -p build && cd build && cmake $$CMAKE_TOOLCHAIN .. -DBUILD_SHARED_LIBS=Off -DENABLE_COMMONCRYPTO=Off -DENABLE_GNUTLS=Off -DENABLE_MBEDTLS=Off -DENABLE_OPENSSL=Off -DENABLE_WINDOWS_CRYPTO=Off -DENABLE_BZIP2=Off -DENABLE_LZMA=Off -DENABLE_ZSTD=Off -DBUILD_TOOLS=Off -DBUILD_REGRESS=Off -DBUILD_EXAMPLES=Off -DBUILD_DOC=Off -DCMAKE_FIND_ROOT_PATH=$$PREFIX -DCMAKE_INSTALL_PREFIX=$$PREFIX && make -j8 && make install
+lib/libzip.a: build/libzip-1.9.2 lib/libz.a
+	cd $< && mkdir -p build && cd build && cmake $$CMAKE_TOOLCHAIN .. -DBUILD_SHARED_LIBS=Off -DENABLE_COMMONCRYPTO=Off -DENABLE_GNUTLS=Off -DENABLE_MBEDTLS=Off -DENABLE_OPENSSL=Off -DENABLE_WINDOWS_CRYPTO=Off -DENABLE_BZIP2=Off -DENABLE_LZMA=Off -DENABLE_ZSTD=Off -DBUILD_TOOLS=Off -DBUILD_REGRESS=Off -DBUILD_EXAMPLES=Off -DBUILD_DOC=Off -DCMAKE_FIND_ROOT_PATH=$$PREFIX -DCMAKE_INSTALL_PREFIX=$$PREFIX -DZLIB_LIBRARY=$(shell pwd)/lib/libz.a -DZLIB_INCLUDE_DIR=$(shell pwd)/include && make -j8 && make install
 
 # ZLIB
 zlib: lib/libz.a
